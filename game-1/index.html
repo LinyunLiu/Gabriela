@@ -24,7 +24,7 @@
             margin-top: 60px;
         }
         #title{
-            font-size: clamp(35px, 5vw, 50px);
+            font-size: clamp(25px, 6vw, 50px);
             font-weight: bold;
             background: linear-gradient(90deg, #531b93, #ff758c, #ffd479);
             -webkit-background-clip: text;
@@ -44,7 +44,7 @@
             border-radius: 10px;
             background-color: antiquewhite;
             max-width: 750px;
-            min-width: 400px;
+            min-width: 300px;
             width: 80vw;
         }
         #hint {
@@ -55,11 +55,12 @@
         #guess-input {
             font-size: 20px;
             padding: 10px;
-            width: 300px;
             margin-bottom: 15px;
             text-align: center;
             border: 1px solid #ff758c;
             border-radius: 10px;
+            width: 100%;
+            max-width: 500px;
         }
         #new {
             padding: 12px 25px;
@@ -80,7 +81,8 @@
             border-radius: 10px;
             cursor: pointer;
             transition: background-color 0.3s;
-            width: 300px;
+            width: 100%;
+            max-width: 500px;
         }
         button:hover {
             background-color: #ff758ccc;
