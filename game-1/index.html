@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Guess the Secret Word</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="author" content="Linyun Liu"/>
+    <meta name="theme-color" content="#222222">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+        body{
+            background-color: #222222;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, sans-serif;
+            margin-top: 60px;
+        }
+        #title{
+            font-size: clamp(35px, 5vw, 50px);
+            font-weight: bold;
+            background: linear-gradient(90deg, #531b93, #ff758c, #ffd479);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        p{
+            font-size: 16px;
+            background: linear-gradient(90deg, #531b93, #ff758c, #ffd479);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-style: italic;
+        }
+        #game-container {
+            text-align: center;
+            padding: 20px;
+            border: 1px solid transparent;
+            border-radius: 10px;
+            background-color: antiquewhite;
+            max-width: 750px;
+            min-width: 400px;
+            width: 80vw;
+        }
+        #hint {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #222222;
+        }
+        #guess-input {
+            font-size: 20px;
+            padding: 10px;
+            width: 300px;
+            margin-bottom: 15px;
+            text-align: center;
+            border: 1px solid #ff758c;
+            border-radius: 10px;
+        }
+        #new {
+            padding: 12px 25px;
+            font-size: 18px;
+            background: linear-gradient(45deg, #531b93, #ff758c, #ffd479);
+            color: antiquewhite;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #submit{
+            padding: 12px 25px;
+            font-size: 18px;
+            background-color: #ff758c;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 300px;
+        }
+        button:hover {
+            background-color: #ff758ccc;
+        }
+        #result {
+            margin-top: 15px;
+            font-size: 18px;
+        }
+        #video-container {
+            display: none;
+            margin-top: 30px;
+            max-width: 750px;
+            min-width: 400px;
+            width: 80vw;
+            justify-content: center;
+            align-items: center;
+        }
+        iframe {
+            width: 400vw;
+            height: 60vw;
+            max-height: 500px;
+            min-height: 300px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 id="title">Guess the Secret Word</h1>
+    <button onclick="startNewGame()" id="new">New Game</button>
+    <p>New game new surprise!</p>
+    <br>
+    <div id="game-container">
+        <div id="hint"></div>
+        <input type="text" id="guess-input" placeholder="Enter your guess">
+        <br>
+        <button onclick="checkGuess()" id="submit">Submit</button>
+        <div id="result"></div>
+    </div>
+    <div id="video-container"></div>
+    <br><br><br><br><br>
+</div>
+
+<script>
+    const puzzles = [
+        {
+            hint: "I'm tall when I'm young and short when I'm old. What am I?",
+            answer: "candle",
+            videoId: "DLzxrzFCyOs"
+        },
+        {
+            hint: "What comes once in a minute, twice in a moment, but never in a thousand years?",
+            answer: "m",
+            videoId: "jNQXAC9IVRw"
+        },
+        {
+            hint: "What has cities but no houses, forests but no trees, and water but no fish?",
+            answer: "map",
+            videoId: "ZZ5LpwO-An4"
+        },
+        {
+            hint: "What can travel around the world while staying in a corner?",
+            answer: "stamp",
+            videoId: "dQw4w9WgXcQ"
+        },
+        {
+            hint: "What has a neck but no head?",
+            answer: "bottle",
+            videoId: "kfVsfOSbJY0"
+        },
+        {
+            hint: "What is full of holes but still holds water?",
+            answer: "sponge",
+            videoId: "6Ejga4kJUts"
+        },
+        {
+            hint: "What has words but never speaks?",
+            answer: "book",
+            videoId: "G1IbRujko-A"
+        },
+        {
+            hint: "What belongs to you but others use it more than you do?",
+            answer: "name",
+            videoId: "L_jWHffIx5E"
+        },
+        {
+            "hint": "What has a face but no head?",
+            "answer": "clock",
+            "videoId": "dQw4w9WgXcQ"
+        },
+        {
+            "hint": "What grows in darkness but vanishes in light?",
+            "answer": "mushroom",
+            "videoId": "XqZsoesa55w"
+        },
+        {
+            "hint": "What can you taste better than you can smell?",
+            "answer": "tongue",
+            "videoId": "kJQP7kiw5Fk"
+        },
+        {
+            "hint": "What has no substance but can follow you everywhere?",
+            "answer": "shadow",
+            "videoId": "9bZkp7q19f0"
+        },
+        {
+            "hint": "The more you take away, the more I become. What am I?",
+            "answer": "hole",
+            "videoId": "_OBlgSz8sSM"
+        },
+        {
+            "hint": "What can you see in water but never get wet?",
+            "answer": "reflection",
+            "videoId": "My2FRPA3Gf8"
+        },
+        {
+            "hint": "What has a ring but no finger?",
+            "answer": "telephone",
+            "videoId": "YQHsXMglC9A"
+        },
+        {
+            "hint": "What has a bank but no money?",
+            "answer": "river",
+            "videoId": "JGwWNGJdvx8"
+        },
+        {
+            "hint": "What can you catch but never hold?",
+            "answer": "cold",
+            "videoId": "2vjPBrBU-TM"
+        }
+    ];
+
+    let currentPuzzle;
+    let index = 0
+
+    function startNewGame() {
+        // Hide video and show game
+        document.getElementById('video-container').style.display = 'none';
+        document.getElementById('game-container').style.display = 'block';
+        // Select random puzzle
+        if (index >= puzzles.length) {
+            index = 0
+        }
+        currentPuzzle = puzzles[index];
+        index++
+        // Reset UI
+        document.getElementById('hint').textContent = currentPuzzle.hint;
+        document.getElementById('guess-input').value = '';
+        document.getElementById('result').textContent = '';
+        document.getElementById('guess-input').style.backgroundColor = 'white';
+    }
+
+    function checkGuess() {
+        const userGuess = document.getElementById('guess-input').value.toLowerCase().trim();
+        const resultDiv = document.getElementById('result');
+
+        if(userGuess === currentPuzzle.answer) {
+            showVideo(currentPuzzle.videoId);
+            resultDiv.textContent = 'Correct! Well done!';
+            resultDiv.style.color = 'green';
+        } else {
+            document.getElementById('guess-input').style.backgroundColor = '#ffe6e6';
+            resultDiv.textContent = 'Incorrect. Try again!';
+            resultDiv.style.color = 'red';
+        }
+    }
+    function showVideo(videoId) {
+        document.getElementById('game-container').style.display = 'none';
+        const videoContainer = document.getElementById('video-container');
+        videoContainer.style.display = 'flex';
+        videoContainer.innerHTML = `
+                <iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+    }
+    // Start first game
+    startNewGame();
+</script>
+</body>
+</html>
